@@ -20,7 +20,7 @@ require (
 	github.com/beevik/etree v1.5.0
 	github.com/chzyer/readline v1.5.1
 	github.com/cilium/ebpf v0.17.3
-	github.com/cloudflare/circl v1.5.0
+	github.com/cloudflare/circl v1.6.3
 	github.com/coreos/go-systemd/v22 v22.5.0
 	github.com/corpix/uarand v0.2.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.4
@@ -28,7 +28,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set/v2 v2.7.0
 	github.com/denisbrodbeck/machineid v1.0.1
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13
 	github.com/elastic/go-libaudit/v2 v2.6.2
 	github.com/emersion/go-message v0.18.0
@@ -40,6 +39,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/go-viper/mapstructure/v2 v2.4.0
 	github.com/gobwas/glob v0.2.3
+	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
 	github.com/golang/protobuf v1.5.4
 	github.com/golang/snappy v0.0.4
@@ -49,7 +49,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gopacket/gopacket v1.3.1
 	github.com/gorilla/mux v1.7.4
-	github.com/gorilla/websocket v1.4.2
+	github.com/gorilla/websocket v1.5.3
 	github.com/gosnmp/gosnmp v1.35.0
 	github.com/h2non/filetype v1.1.3
 	github.com/hashicorp/go-version v1.6.0
@@ -82,7 +82,7 @@ require (
 	github.com/pkg/sftp v1.11.0
 	github.com/projectdiscovery/gostruct v0.0.0-20230520110439-bbdedaae3c35
 	github.com/quic-go/quic-go v0.49.1
-	github.com/rabbitmq/amqp091-go v1.9.0
+	github.com/rabbitmq/amqp091-go v1.14.0
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
 	github.com/samber/lo v1.38.1
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1
@@ -134,7 +134,7 @@ require (
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/vishvananda/netlink v1.1.1-0.20211118161826-650dca95af54 // indirect
-	go.opentelemetry.io/otel/sdk v1.32.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.33.0 // indirect
 	mvdan.cc/sh/v3 v3.10.0
 )
 
