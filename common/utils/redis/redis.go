@@ -125,16 +125,17 @@ func readResponse(reader *bufio.Reader) (interface{}, error) {
 		if size <= 0 {
 			return make([][]byte, 0), nil
 		}
-		res := make([][]byte, size)
+		// size is announced by the peer: grow as elements actually arrive instead of
+		// allocating it up front, otherwise a hostile server can exhaust memory with one line.
+		var res [][]byte
 		for i := 0; i < size; i++ {
-			res[i], err = readBulk(reader, "")
-			if err == doesNotExist {
-				continue
-			}
-			if err != nil {
+			item, err := readBulk(reader, "")
+			if err != nil && err != doesNotExist {
 				return nil, err
 			}
+			// a missing element keeps its slot as nil
 			// dont read end of line as might not have been bulk
+			res = append(res, item)
 		}
 		return res, nil
 	}
