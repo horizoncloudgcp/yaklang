@@ -14,6 +14,9 @@ concurrency:
 
 jobs:
   build_and_release:
+    # Signing and publishing use the Azure Key Vault and OSS credentials of yaklang/yaklang.
+    # A fork has neither, so there the jobs could only fail: skip them instead.
+    if: ${{ github.repository == 'yaklang/yaklang' }}
     strategy:
       matrix:
         os:
@@ -146,7 +149,7 @@ jobs:
           path: ./vulinbox_linux_amd64
 
   download_artifacts_and_release:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
+    if: ${{ github.repository == 'yaklang/yaklang' && (github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') }}
     needs:
       - build_and_release
     runs-on: ubuntu-24.04
