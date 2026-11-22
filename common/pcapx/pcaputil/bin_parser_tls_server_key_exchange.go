@@ -50,7 +50,7 @@ func DecodeTLS12ServerKeyExchange(encoded []byte, version, suite uint16) (*TLSSe
 	}
 	literals, _, err := stream_parser.DecodeTLS12KeyExchangeLayout(encoded, profile)
 	if err != nil {
-		return nil, protocolError(ErrMalformedMessage, err.Error())
+		return nil, protocolError(ErrMalformedMessage, "%s", err.Error())
 	}
 	view := &TLSServerKeyExchangeView{Fields: map[string]any{}}
 	for _, literal := range literals {
@@ -94,13 +94,13 @@ func (t *binTLS) observeKeyExchangeOffers(h *tlsHelloView) {
 
 func tls12KeyExchangeOffered(v []byte, selected uint16, limit int, name string) error {
 	if len(v) < 4 || int(binary.BigEndian.Uint16(v)) != len(v)-2 || (len(v)-2)%2 != 0 {
-		return protocolError(ErrMalformedMessage, "TLS ServerKeyExchange captured ClientHello "+name+" vector")
+		return protocolError(ErrMalformedMessage, "%s", "TLS ServerKeyExchange captured ClientHello "+name+" vector")
 	}
 	if (len(v)-2)/2 > limit {
-		return protocolError(ErrResourceExceeded, "TLS ServerKeyExchange ClientHello "+name+" count")
+		return protocolError(ErrResourceExceeded, "%s", "TLS ServerKeyExchange ClientHello "+name+" count")
 	}
 	if !tlsContains16(v[2:], selected) {
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS ServerKeyExchange %s 0x%04x was not offered in captured ClientHello", name, selected))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS ServerKeyExchange %s 0x%04x was not offered in captured ClientHello", name, selected))
 	}
 	return nil
 }
@@ -149,14 +149,14 @@ func (t *binTLS) admitServerKeyExchange(dir int, encoded []byte, limits ...int) 
 	}
 	algorithm := view.Fields["Signature Algorithm"].(uint16)
 	if tlsGREASE16(algorithm) {
-		return nil, "", protocolError(ErrMalformedMessage, fmt.Sprintf("TLS ServerKeyExchange selects reserved GREASE signature algorithm 0x%04x", algorithm))
+		return nil, "", protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS ServerKeyExchange selects reserved GREASE signature algorithm 0x%04x", algorithm))
 	}
 	if signer := tls12SignatureSigner(algorithm); signer != "" && signer != tls12ServerKeyExchangeSigner(t.suite) {
 		return nil, "", protocolError(ErrMalformedMessage, "TLS ServerKeyExchange signature algorithm disagrees with cipher authentication family")
 	}
 	if group, ok := view.Fields["Named Group"].(uint16); ok {
 		if tlsGREASE16(group) {
-			return nil, "", protocolError(ErrMalformedMessage, fmt.Sprintf("TLS ServerKeyExchange selects reserved GREASE named group 0x%04x", group))
+			return nil, "", protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS ServerKeyExchange selects reserved GREASE named group 0x%04x", group))
 		}
 		if t.keyExchangeOffers.hasGroups {
 			if err := tls12KeyExchangeOffered(t.keyExchangeOffers.groups, group, limit, "supported_groups"); err != nil {

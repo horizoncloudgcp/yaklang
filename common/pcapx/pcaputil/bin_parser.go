@@ -1921,7 +1921,7 @@ func (f *binFlow) feed(dir int, data []byte, ts time.Time) {
 			}
 			if err != nil {
 				if errors.Is(err, stream_parser.ErrKafkaUnsupported) {
-					err = protocolError(ErrUnsupportedFeature, err.Error())
+					err = protocolError(ErrUnsupportedFeature, "%s", err.Error())
 				}
 				if e.Protocol == "dcerpc" {
 					e.nativeSessionMessage = true

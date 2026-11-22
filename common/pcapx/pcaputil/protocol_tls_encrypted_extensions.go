@@ -55,7 +55,7 @@ func (t *binTLS) admitEncryptedExtensions(dir int, body []byte, limits ...int) e
 		// a location rule for future registered extensions.
 		switch typ {
 		case 5, 13, 18, 21, 33, 41, 43, 44, 45, 47, 48, 50, 51:
-			return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS extension %d is not permitted in EncryptedExtensions", typ))
+			return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS extension %d is not permitted in EncryptedExtensions", typ))
 		case 49:
 			return protocolError(ErrMalformedMessage, "TLS post_handshake_auth must be an empty ClientHello extension")
 		case 42:
@@ -74,10 +74,10 @@ func (t *binTLS) admitEncryptedExtensions(dir int, body []byte, limits ...int) e
 		}
 	}
 	if hasGREASE {
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS EncryptedExtensions selects reserved GREASE extension 0x%04x", grease))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS EncryptedExtensions selects reserved GREASE extension 0x%04x", grease))
 	}
 	if tlsGREASEALPN(alpn) {
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS EncryptedExtensions selects reserved GREASE ALPN 0x%04x", binary.BigEndian.Uint16(alpn)))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS EncryptedExtensions selects reserved GREASE ALPN 0x%04x", binary.BigEndian.Uint16(alpn)))
 	}
 	if count > max {
 		return protocolError(ErrResourceExceeded, "TLS EncryptedExtensions collection limit")

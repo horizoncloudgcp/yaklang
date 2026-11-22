@@ -78,7 +78,7 @@ func (i *fuzzFinalizeTestInvoker) AddToTimeline(entry, content string) {
 	i.timelineEvents = append(i.timelineEvents, entry)
 	i.timelineRecords = append(i.timelineRecords, fuzzFinalizeTimelineRecord{entry: entry, content: content})
 	if cfg, ok := i.GetConfig().(*aicommon.Config); ok && cfg.GetTimeline() != nil {
-		cfg.GetTimeline().PushText(cfg.AcquireId(), content)
+		cfg.GetTimeline().PushText(cfg.AcquireId(), "%s", content)
 	}
 }
 

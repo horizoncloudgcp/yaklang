@@ -62,7 +62,7 @@ func (s *nativePlanCoordinatorSession) ReviewPlan(ctx context.Context) error {
 	var err error
 	s.approved, err = s.session.SubmitInput(ctx, s.input, false, s.manual)
 	if err != nil {
-		s.r.EmitPlanExecFail(err.Error())
+		s.r.EmitPlanExecFail("%s", err.Error())
 		s.r.EmitJSON(schema.EVENT_TYPE_END_PLAN_AND_EXECUTION, "plan", s.events)
 	}
 	return err
@@ -215,7 +215,7 @@ func (r *ReAct) invokeNativeCoordinator(done chan struct{}, ctx context.Context,
 		r.EmitJSON(schema.EVENT_TYPE_START_PLAN_AND_EXECUTION, r.config.Id, events)
 		defer func() {
 			if err != nil {
-				r.EmitPlanExecFail(err.Error())
+				r.EmitPlanExecFail("%s", err.Error())
 			}
 			r.EmitJSON(schema.EVENT_TYPE_END_PLAN_AND_EXECUTION, r.config.Id, events)
 		}()

@@ -399,7 +399,7 @@ func (s *binSSH) consumeMessage(dir int, raw []byte) (map[string]any, error) {
 	}
 	initial, err := stream_parser.DecodeSSHInitialPacket(raw, profile)
 	if err != nil {
-		return nil, protocolError(ErrMalformedMessage, err.Error())
+		return nil, protocolError(ErrMalformedMessage, "%s", err.Error())
 	}
 	info := map[string]any{
 		"Packet Name":    sshExchangeMessageName(msg, kex),
@@ -695,7 +695,7 @@ func sshNegotiate(client, server sshKexLists) map[string]string {
 func sshNegotiationError(selected map[string]string) error {
 	for _, name := range []string{"Kex Algorithm", "Host Key Algorithm", "Encryption C2S", "Encryption S2C", "MAC C2S", "MAC S2C", "Compression C2S", "Compression S2C"} {
 		if selected[name] == "" {
-			return protocolError(ErrMalformedMessage, "SSH negotiation has no common "+name)
+			return protocolError(ErrMalformedMessage, "%s", "SSH negotiation has no common "+name)
 		}
 	}
 	return nil

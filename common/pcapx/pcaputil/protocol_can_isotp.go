@@ -265,7 +265,7 @@ func (a *binParser) decodeCANISO(fields map[string]any, e *ProtocolEvent) (bool,
 	}
 	a.canISOMu.Lock()
 	defer a.canISOMu.Unlock()
-	fail := func(kind ProtocolErrorKind, why string) error { return protocolError(kind, "CAN ISO-TP "+why) }
+	fail := func(kind ProtocolErrorKind, why string) error { return protocolError(kind, "%s", "CAN ISO-TP "+why) }
 	if a.canISODisabled {
 		return true, fail(ErrResourceExceeded, "receiver history exhausted")
 	}

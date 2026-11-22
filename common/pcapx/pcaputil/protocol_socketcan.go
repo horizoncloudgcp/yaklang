@@ -41,10 +41,10 @@ func (c *CaptureConfig) packetHandlerWithLink(ctx context.Context, packet gopack
 // unused data padding. Legacy classical header padding stays opaque.
 func decodeSocketCAN(w []byte) (map[string]any, error) {
 	bad := func(why string) (map[string]any, error) {
-		return nil, protocolError(ErrMalformedMessage, "SocketCAN "+why)
+		return nil, protocolError(ErrMalformedMessage, "%s", "SocketCAN "+why)
 	}
 	unsupported := func(why string) (map[string]any, error) {
-		return nil, protocolError(ErrUnsupportedFeature, "SocketCAN "+why)
+		return nil, protocolError(ErrUnsupportedFeature, "%s", "SocketCAN "+why)
 	}
 	if len(w) < 8 {
 		return bad("header is incomplete")

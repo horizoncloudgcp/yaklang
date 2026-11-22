@@ -358,7 +358,7 @@ func decodeLock(ctx context.Context, m map[string]any) (Lockfile, error) {
 	switch out.Metadata.Version {
 	case "", "1.0", "1.1", "2.0", "2.1":
 	default:
-		return out, scanerr.New(scanerr.UnsupportedSyntax, fmt.Sprintf("poetry lock version %q", out.Metadata.Version))
+		return out, scanerr.New(scanerr.UnsupportedSyntax, "%s", fmt.Sprintf("poetry lock version %q", out.Metadata.Version))
 	}
 	records, err := locktoml.Field[[]any](m, "package")
 	if err != nil {

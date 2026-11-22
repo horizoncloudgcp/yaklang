@@ -63,7 +63,7 @@ func (s *binMemcached) reserve(n int64) error {
 	return nil
 }
 func memcachedMalformed(why string) error {
-	return protocolError(ErrMalformedMessage, "Memcached: "+why)
+	return protocolError(ErrMalformedMessage, "%s", "Memcached: "+why)
 }
 func memcachedKey(k []byte) bool {
 	if len(k) == 0 || len(k) > 250 {

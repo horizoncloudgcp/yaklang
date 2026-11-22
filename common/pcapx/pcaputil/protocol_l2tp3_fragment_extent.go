@@ -39,5 +39,5 @@ func l2tp3SelectedFirstHeaderError(v *l2tp3Session, b l2tp3Binding, first []l2tp
 	m["Required L2TP Data Header Bytes"] = required
 	m["First Fragment Header Scope"] = "private unique current receiver cookie/sublayer profile; no child admission"
 	m["Payload Decoded"] = false
-	return protocolError(ErrMalformedMessage, fmt.Sprintf("IPv6 first fragment has %d of %d selected L2TPv3 data header bytes", first[0].firstPayloadBytes, required))
+	return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("IPv6 first fragment has %d of %d selected L2TPv3 data header bytes", first[0].firstPayloadBytes, required))
 }

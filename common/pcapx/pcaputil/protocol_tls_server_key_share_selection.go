@@ -30,7 +30,7 @@ func tls13NonPSKServerKeyShareSelection(body []byte, server, client *tlsHelloVie
 		return err
 	}
 	if !found {
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS 1.3 ServerHello key_share group 0x%04x was not offered in current ClientHello", group))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS 1.3 ServerHello key_share group 0x%04x was not offered in current ClientHello", group))
 	}
 	groups := client.ext[10]
 	if len(groups) < 4 || int(binary.BigEndian.Uint16(groups)) != len(groups)-2 || (len(groups)-2)%2 != 0 {
@@ -40,7 +40,7 @@ func tls13NonPSKServerKeyShareSelection(body []byte, server, client *tlsHelloVie
 		return protocolError(ErrResourceExceeded, "TLS ClientHello supported_groups count")
 	}
 	if !tlsContains16(groups[2:], group) {
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS 1.3 ServerHello key_share group 0x%04x was not in current ClientHello supported_groups", group))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS 1.3 ServerHello key_share group 0x%04x was not in current ClientHello supported_groups", group))
 	}
 	return nil
 }

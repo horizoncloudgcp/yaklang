@@ -49,7 +49,7 @@ func DecodeTLS12ClientKeyExchange(encoded []byte, version, suite uint16) (*TLSCl
 	}
 	literals, _, err := stream_parser.DecodeTLS12KeyExchangeLayout(encoded, profile)
 	if err != nil {
-		return nil, protocolError(ErrMalformedMessage, err.Error())
+		return nil, protocolError(ErrMalformedMessage, "%s", err.Error())
 	}
 	view := &TLSClientKeyExchangeView{Profile: profile, Fields: map[string]any{}}
 	for _, literal := range literals {

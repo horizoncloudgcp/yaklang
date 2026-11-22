@@ -82,7 +82,7 @@ func TestTimelineImagesRespectShrunkAndLightweightPromptViews(t *testing.T) {
 	require.Equal(t, int64(1), view.Images[0].TimelineItemID)
 	recent := tl.DumpRecentOrdinaryWithImages(10000, false)
 	require.Len(t, recent.Images, 1)
-	tl.PushText(3, "[observation]: "+strings.Repeat("recent text ", 200))
+	tl.PushText(3, "%s", "[observation]: "+strings.Repeat("recent text ", 200))
 	recent = tl.DumpRecentOrdinaryWithImages(100, false)
 	require.NotEmpty(t, recent.Text)
 	require.Empty(t, recent.Images, "an omitted image entry must not survive through the lightweight side channel")

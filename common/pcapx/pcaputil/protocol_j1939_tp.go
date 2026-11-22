@@ -51,7 +51,7 @@ func (a *binParser) decodeJ1939TP(id uint32, data []byte, ref PacketReference, a
 	}
 	key := j1939TPKey{ref.Domain, byte(id), byte(id >> 8)}
 	fail := func(kind ProtocolErrorKind, why string) (map[string]any, []PacketReference, error) {
-		return nil, nil, protocolError(kind, "J1939 TP "+why)
+		return nil, nil, protocolError(kind, "%s", "J1939 TP "+why)
 	}
 	if a.j1939TPDisabled {
 		return fail(ErrResourceExceeded, "receiver history exhausted")

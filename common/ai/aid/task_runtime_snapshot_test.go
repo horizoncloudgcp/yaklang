@@ -38,7 +38,7 @@ func (m *mockReactRuntimeSource) GetSessionTimeline() *aicommon.Timeline {
 func TestBuildTaskRuntimeReport_AsyncAndExecutingReactTasks(t *testing.T) {
 	timeline := aicommon.NewTimeline(nil, nil)
 	for i := 0; i < 12; i++ {
-		timeline.PushText(int64(i+1), "line-"+strconv.Itoa(i))
+		timeline.PushText(int64(i+1), "%s", "line-"+strconv.Itoa(i))
 	}
 
 	asyncTask := aicommon.NewStatefulTaskBase("async-1", "async input", context.Background(), nil, false)
@@ -81,7 +81,7 @@ func TestBuildTaskRuntimeReport_AsyncAndExecutingReactTasks(t *testing.T) {
 func TestRecentTextOutputsFromTimeline_LimitAndOrder(t *testing.T) {
 	timeline := aicommon.NewTimeline(nil, nil)
 	for i := 0; i < 15; i++ {
-		timeline.PushText(int64(i+1), "msg-"+strconv.Itoa(i))
+		timeline.PushText(int64(i+1), "%s", "msg-"+strconv.Itoa(i))
 	}
 	outputs := RecentTaskTextOutputs(timeline, 10)
 	require.Len(t, outputs, 10)

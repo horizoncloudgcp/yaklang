@@ -454,7 +454,7 @@ func (s *binRFB) packet(dir int, w []byte, max, maxBytes int, consume bool) (int
 			}
 			size = 4 + uint64(s.bpp) + n*uint64(s.bpp+8)
 		default:
-			return 0, nil, protocolError(ErrUnsupportedFeature, fmt.Sprintf("RFB rectangle encoding %d", encoding))
+			return 0, nil, protocolError(ErrUnsupportedFeature, "%s", fmt.Sprintf("RFB rectangle encoding %d", encoding))
 		}
 		if size > uint64(maxBytes) || uint64(pos)+size > uint64(maxBytes) {
 			return 0, nil, protocolError(ErrResourceExceeded, "RFB rectangle payload")

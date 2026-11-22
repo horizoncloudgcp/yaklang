@@ -93,7 +93,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 				writer.Write([]byte(`session-code not found`))
 				return
 			}
-			log.Infof("data.Text: " + data.Text)
+			log.Infof("%s", "data.Text: "+data.Text)
 			// var newData, _ = captcha.New(150, 50)
 			// val.(map[string]any)["code"] = newData
 			if !data.Verify(code, true) {
@@ -189,7 +189,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 				writer.Write([]byte(`session-code not found`))
 				return
 			}
-			log.Infof("data.Text: " + data.Text)
+			log.Infof("%s", "data.Text: "+data.Text)
 			// var newData, _ = captcha.New(150, 50)
 			// val.(map[string]any)["code"] = newData
 			if !data.Verify(code, true) {
@@ -289,7 +289,7 @@ func Register(t *mux.Router) (*mux.Router, []string) {
 				writer.Write([]byte(`session-code not found`))
 				return
 			}
-			log.Infof("safe captcha data.Text: " + data.Text)
+			log.Infof("%s", "safe captcha data.Text: "+data.Text)
 			delete(val, "code")
 			if !data.Verify(code, true) {
 				writer.WriteHeader(500)

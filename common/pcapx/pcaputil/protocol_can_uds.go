@@ -12,7 +12,7 @@ import (
 // eligibility once that service has multiple captured generations.
 func (a *binParser) decodeCANUDS(s *canISOConnection, dir int, body []byte, e *ProtocolEvent) (map[string]any, error) {
 	fail := func(kind ProtocolErrorKind, why string) (map[string]any, error) {
-		return nil, protocolError(kind, "CAN UDS "+why)
+		return nil, protocolError(kind, "%s", "CAN UDS "+why)
 	}
 	if s.udsDisabled {
 		return fail(ErrResourceExceeded, "request history exhausted")

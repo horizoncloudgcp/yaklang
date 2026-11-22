@@ -428,7 +428,7 @@ func (t *binTLS) observeResumptionHello(dir int, typ byte, body []byte, h *tlsHe
 
 func (t *binTLS) newSessionTicket(dir int, body []byte, authenticated bool, limits ...int) (map[string]any, error) {
 	bad := func(why string) (map[string]any, error) {
-		return nil, protocolError(ErrMalformedMessage, "TLS NewSessionTicket "+why)
+		return nil, protocolError(ErrMalformedMessage, "%s", "TLS NewSessionTicket "+why)
 	}
 	if t.version == 0 {
 		return nil, protocolError(ErrContextRequired, "TLS NewSessionTicket requires observed negotiated version")

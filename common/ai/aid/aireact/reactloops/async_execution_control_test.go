@@ -17,7 +17,7 @@ type asyncReviewTimelineInvoker struct {
 }
 
 func (i *asyncReviewTimelineInvoker) AddToTimeline(kind, content string) {
-	i.timeline.PushText(i.GetConfig().AcquireId(), "["+kind+"]:\n"+content)
+	i.timeline.PushText(i.GetConfig().AcquireId(), "%s", "["+kind+"]:\n"+content)
 }
 
 func TestAsyncDirectAnswerSignalWritesTimelineOnce(t *testing.T) {

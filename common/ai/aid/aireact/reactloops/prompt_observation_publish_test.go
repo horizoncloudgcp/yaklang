@@ -75,7 +75,7 @@ type observedCompressionInvoker struct {
 }
 
 func (i *observedCompressionInvoker) AddToTimeline(kind, content string) {
-	i.timeline.PushText(i.GetConfig().AcquireId(), "["+kind+"]:\n"+content)
+	i.timeline.PushText(i.GetConfig().AcquireId(), "%s", "["+kind+"]:\n"+content)
 }
 
 func (i *observedCompressionInvoker) AddToTimelineWithPromptProjection(kind, content, projected string) {

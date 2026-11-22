@@ -243,7 +243,7 @@ func (p *portDispatchPlan) execute(e *planExecution) bool {
 			return true
 		}
 		if p.transport == "UDP" {
-			log.Debugf(op.message)
+			log.Debugf("%s", op.message)
 		}
 		e.at("op.Recovery()")
 		op.recovery()

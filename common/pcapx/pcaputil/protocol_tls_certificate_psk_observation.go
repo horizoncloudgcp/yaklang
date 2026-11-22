@@ -36,7 +36,7 @@ func ObserveTLSEarlyDataHelloRecord(record []byte, maxElements int) (*TLSHelloEx
 
 func observeTLSHelloExtensionRecord(record []byte, maxElements int, observedExtension uint16, name string) (*TLSHelloExtensionRecordObservation, error) {
 	bad := func() (*TLSCertificatePSKHelloRecordObservation, error) {
-		return nil, protocolError(ErrMalformedMessage, "TLS "+name+" Hello observation framing")
+		return nil, protocolError(ErrMalformedMessage, "%s", "TLS "+name+" Hello observation framing")
 	}
 	if len(record) < 47 || record[0] != 22 || record[1] != 3 || record[2] < 1 || record[2] > 3 ||
 		int(binary.BigEndian.Uint16(record[3:5])) != len(record)-5 || len(record)-5 > 16384 ||
@@ -91,7 +91,7 @@ func observeTLSHelloExtensionRecord(record []byte, maxElements int, observedExte
 		at += 4 + n
 	}
 	if maxElements < 0 || count > maxElements {
-		return nil, protocolError(ErrResourceExceeded, "TLS "+name+" Hello observation collection limit")
+		return nil, protocolError(ErrResourceExceeded, "%s", "TLS "+name+" Hello observation collection limit")
 	}
 	hello, err := tlsHello(body, client)
 	if err != nil {
@@ -104,7 +104,7 @@ func observeTLSHelloExtensionRecord(record []byte, maxElements int, observedExte
 		}
 	}
 	if flagOffset < 0 || binary.BigEndian.Uint16(body) != 0x303 || !bytes.Equal(hello.compression, []byte{0}) || !hasTLS13Cipher {
-		return nil, protocolError(ErrContextRequired, "TLS "+name+" Hello observation needs a complete TLS 1.3 declaration")
+		return nil, protocolError(ErrContextRequired, "%s", "TLS "+name+" Hello observation needs a complete TLS 1.3 declaration")
 	}
 	return &TLSCertificatePSKHelloRecordObservation{HandshakeType: record[5], RecordVersion: binary.BigEndian.Uint16(record[1:3]),
 		LegacyVersion: binary.BigEndian.Uint16(body), Extensions: count, ExtensionOffset: flagOffset, ExtensionDataLength: flagLength}, nil

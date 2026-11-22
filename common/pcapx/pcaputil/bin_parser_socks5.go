@@ -232,7 +232,7 @@ func (s *binSOCKS5) consume(dir int, raw []byte, entry string, result map[string
 		case 2:
 			s.phase = socks5AuthRequest
 		default:
-			return nil, protocolError(ErrUnsupportedFeature, fmt.Sprintf("socks5: authentication method %d is not supported", method))
+			return nil, protocolError(ErrUnsupportedFeature, "%s", fmt.Sprintf("socks5: authentication method %d is not supported", method))
 		}
 	case "AuthRequest":
 		if !client || s.phase != socks5AuthRequest || len(raw) < 4 || raw[0] != 1 {

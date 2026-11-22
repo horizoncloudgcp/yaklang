@@ -36,7 +36,7 @@ func (r *ReAct) AsyncExecuteCod(ctx context.Context, coordinatorID string, onFin
 				utils.PrintCurrentGoroutineRuntimeStack()
 			}
 			if finalErr != nil {
-				r.EmitPlanExecFail(finalErr.Error())
+				r.EmitPlanExecFail("%s", finalErr.Error())
 			}
 			r.EmitJSON(schema.EVENT_TYPE_END_PLAN_AND_EXECUTION, r.config.Id, eventParams)
 			if onFinished != nil {

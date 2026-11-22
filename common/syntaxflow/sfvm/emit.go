@@ -411,7 +411,7 @@ func (v *SyntaxFlowVisitor) EmitGetCall() {
 
 func (v *SyntaxFlowVisitor) Show() {
 	for _, c := range v.codes {
-		log.Infof(c.String())
+		log.Infof("%s", c.String())
 	}
 }
 

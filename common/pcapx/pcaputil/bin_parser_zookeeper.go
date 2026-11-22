@@ -302,7 +302,7 @@ func (s *binZooKeeper) consumeRequest(body []byte) (map[string]any, error) {
 			fields["Packet Name"], fields["Operation"] = "GetData", "GetData"
 		}
 	default:
-		return nil, protocolError(ErrUnsupportedFeature, fmt.Sprintf("ZooKeeper opcode %d is outside the supported profile", opcode))
+		return nil, protocolError(ErrUnsupportedFeature, "%s", fmt.Sprintf("ZooKeeper opcode %d is outside the supported profile", opcode))
 	}
 	if opcode != zookeeperOpcodePing {
 		if _, exists := s.pending[xid]; exists {

@@ -58,7 +58,7 @@ func (s *binDNP3) assembleTransport(dir int, src, dst uint16, control byte, user
 	out["Packet Name"] = "Transport Segment"
 	fail := func(kind ProtocolErrorKind, why string) ([]byte, bool, error) {
 		out["Error Scope"] = "application"
-		return nil, false, protocolError(kind, why)
+		return nil, false, protocolError(kind, "%s", why)
 	}
 	if len(user) == 1 {
 		return fail(ErrMalformedMessage, "DNP3 empty transport payload")

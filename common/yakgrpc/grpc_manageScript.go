@@ -628,7 +628,7 @@ func (s *Server) ExportYakScript(ctx context.Context, req *ypb.ExportYakScriptRe
 			dir = dirRet
 		}
 		if err != nil {
-			return nil, utils.Errorf(v.ScriptName + err.Error())
+			return nil, utils.Errorf("%s", v.ScriptName+err.Error())
 		}
 	}
 

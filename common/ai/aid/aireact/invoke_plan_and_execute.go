@@ -120,7 +120,7 @@ func (r *ReAct) RequireAIForgeAndAsyncExecute(
 	if forgeName == "" {
 		errMsg := "AI Blueprint name is empty, cannot execute; AI 智能应用名称为空，无法执行。请指定正确的应用名称。"
 		r.AddToTimeline("[BLUEPRINT_EMPTY_NAME]", errMsg)
-		r.Emitter.EmitError(errMsg)
+		r.Emitter.EmitError("%s", errMsg)
 		done(utils.Error(errMsg))
 		return
 	}
@@ -132,7 +132,7 @@ func (r *ReAct) RequireAIForgeAndAsyncExecute(
 	if err != nil {
 		// invokeBlueprint 已经记录了详细错误，这里只需要记录最终失败状态
 		r.AddToTimeline("[BLUEPRINT_INVOKE_FAILED]", fmt.Sprintf("Failed to invoke '%s': %v", forgeName, err))
-		r.Emitter.EmitError(fmt.Sprintf("Failed to invoke AI Blueprint '%s'", forgeName))
+		r.Emitter.EmitError("%s", fmt.Sprintf("Failed to invoke AI Blueprint '%s'", forgeName))
 		// Merge result into timeline, do not emit result externally
 		r.AddToTimeline("[BLUEPRINT_RESULT]", fmt.Sprintf("AI 智能应用 '%s' 调用失败，请检查应用名称和配置是否正确。错误详情：%v", forgeName, err))
 		done(fmt.Errorf("failed to invoke ai-blueprint[%v]: %w", forgeName, err))
@@ -142,7 +142,7 @@ func (r *ReAct) RequireAIForgeAndAsyncExecute(
 	// 再次验证返回的实例
 	if ins == nil {
 		r.AddToTimeline("[BLUEPRINT_NULL_AFTER_INVOKE]", fmt.Sprintf("AI Blueprint '%s' returned nil after invoke", forgeName))
-		r.Emitter.EmitError(fmt.Sprintf("AI Blueprint '%s' returned invalid instance", forgeName))
+		r.Emitter.EmitError("%s", fmt.Sprintf("AI Blueprint '%s' returned invalid instance", forgeName))
 		r.AddToTimeline("[BLUEPRINT_RESULT]", fmt.Sprintf("AI 智能应用 '%s' 执行异常。", forgeName))
 		done(utils.Error(fmt.Sprintf("AI Blueprint '%s' returned nil after successful invoke", forgeName)))
 		return
@@ -277,7 +277,7 @@ func (r *ReAct) RequireAIForgeAndExecute(ctx context.Context, forgeName string) 
 	if forgeName == "" {
 		errMsg := "AI Blueprint name is empty, cannot execute; AI 智能应用名称为空，无法执行。请指定正确的应用名称。"
 		r.AddToTimeline("[BLUEPRINT_EMPTY_NAME]", errMsg)
-		r.Emitter.EmitError(errMsg)
+		r.Emitter.EmitError("%s", errMsg)
 		return utils.Error(errMsg)
 	}
 
@@ -287,7 +287,7 @@ func (r *ReAct) RequireAIForgeAndExecute(ctx context.Context, forgeName string) 
 	ins, forgeParams, err := r.invokeBlueprint(forgeName)
 	if err != nil {
 		r.AddToTimeline("[BLUEPRINT_INVOKE_FAILED]", fmt.Sprintf("Failed to invoke '%s': %v", forgeName, err))
-		r.Emitter.EmitError(fmt.Sprintf("Failed to invoke AI Blueprint '%s'", forgeName))
+		r.Emitter.EmitError("%s", fmt.Sprintf("Failed to invoke AI Blueprint '%s'", forgeName))
 		r.AddToTimeline("[BLUEPRINT_RESULT]", fmt.Sprintf("AI 智能应用 '%s' 调用失败，请检查应用名称和配置是否正确。错误详情：%v", forgeName, err))
 		return fmt.Errorf("failed to invoke ai-blueprint[%v]: %w", forgeName, err)
 	}
@@ -295,7 +295,7 @@ func (r *ReAct) RequireAIForgeAndExecute(ctx context.Context, forgeName string) 
 	// 再次验证返回的实例
 	if ins == nil {
 		r.AddToTimeline("[BLUEPRINT_NULL_AFTER_INVOKE]", fmt.Sprintf("AI Blueprint '%s' returned nil after invoke", forgeName))
-		r.Emitter.EmitError(fmt.Sprintf("AI Blueprint '%s' returned invalid instance", forgeName))
+		r.Emitter.EmitError("%s", fmt.Sprintf("AI Blueprint '%s' returned invalid instance", forgeName))
 		r.AddToTimeline("[BLUEPRINT_RESULT]", fmt.Sprintf("AI 智能应用 '%s' 执行异常。", forgeName))
 		return utils.Error(fmt.Sprintf("AI Blueprint '%s' returned nil after successful invoke", forgeName))
 	}

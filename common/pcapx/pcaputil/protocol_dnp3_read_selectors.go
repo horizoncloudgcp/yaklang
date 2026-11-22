@@ -37,7 +37,7 @@ func dnp3DirectReadHeaders(b []byte, limit int, typed, counters, events, counts,
 	selectors := []dnp3StaticSelector{}
 	headers := []any{}
 	fail := func(kind ProtocolErrorKind, why string) ([]any, byte, []dnp3StaticSelector, []any, error) {
-		return nil, 0, nil, nil, protocolError(kind, why)
+		return nil, 0, nil, nil, protocolError(kind, "%s", why)
 	}
 	if len(b) == 0 {
 		return fail(ErrUnsupportedFeature, "DNP3 selected READ requires selectors")

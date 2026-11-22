@@ -47,7 +47,7 @@ func TestSkillContentStaysExactDuringCompression(t *testing.T) {
 	tl := cfg.GetTimeline()
 	tl.SetTimelineBucketByteSize(-1)
 
-	tl.PushText(cfg.AcquireId(), strings.Repeat("ordinary observation ", 40))
+	tl.PushText(cfg.AcquireId(), "%s", strings.Repeat("ordinary observation ", 40))
 	require.True(t, tl.PushSkillFileContent(cfg.AcquireId(), "demo-skill", "SKILL.md", "CANDIDATE_BODY_SECRET", SkillContentSourceAuto, 1, 1, 1))
 
 	snapshot, err := tl.captureCompressionSnapshot()

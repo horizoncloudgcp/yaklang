@@ -36,7 +36,7 @@ func (r *ReAct) executeBlueprint(ctx context.Context, request *invokePlanAndExec
 	r.EmitJSON(schema.EVENT_TYPE_START_PLAN_AND_EXECUTION, r.config.Id, events)
 	defer func() {
 		if err != nil {
-			r.EmitPlanExecFail(err.Error())
+			r.EmitPlanExecFail("%s", err.Error())
 		}
 		r.EmitJSON(schema.EVENT_TYPE_END_PLAN_AND_EXECUTION, r.config.Id, events)
 	}()
