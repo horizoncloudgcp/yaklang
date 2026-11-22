@@ -324,6 +324,17 @@ func safeArchiveJoin(targetDir, entryName string) (string, error) {
 	return filepath.Join(targetDir, entryName), nil
 }
 
+// archiveEntryBaseName 返回压缩包条目的文件名部分，并拒绝 ".." 这类不是普通文件名的结果，
+// 保证单文件解压时写入位置始终在目标目录内。
+// 关键词: zip-slip, 解压文件名校验, archiveEntryBaseName
+func archiveEntryBaseName(entryName string) (string, error) {
+	name := filepath.Base(entryName)
+	if !filepath.IsLocal(name) {
+		return "", utils.Errorf("illegal file name in archive: %s", entryName)
+	}
+	return name, nil
+}
+
 // extractItem 提取项目信息
 type extractItem struct {
 	zipFile      *zip.File
@@ -341,7 +352,11 @@ func extractZipFile(file *zip.File, targetPath string, isDir bool, password stri
 	targetInfo, err := os.Stat(targetPath)
 	if err == nil && targetInfo.IsDir() {
 		// 如果 targetPath 是目录，则将文件解压到该目录下，文件名与 zip 内部一致
-		targetPath = filepath.Join(targetPath, filepath.Base(file.Name))
+		name, nameErr := archiveEntryBaseName(file.Name)
+		if nameErr != nil {
+			return nameErr
+		}
+		targetPath = filepath.Join(targetPath, name)
 		log.Infof("targetPath is a directory, new targetPath: %s", targetPath)
 	} else if err != nil && !os.IsNotExist(err) {
 		log.Infof("failed to stat targetPath: %v", err)
@@ -365,7 +380,11 @@ func extractZipFile(file *zip.File, targetPath string, isDir bool, password stri
 		if err := os.MkdirAll(targetPath, 0755); err != nil {
 			return utils.Errorf("create target directory failed: %v", err)
 		}
-		finalTargetPath = filepath.Join(targetPath, filepath.Base(file.Name))
+		name, nameErr := archiveEntryBaseName(file.Name)
+		if nameErr != nil {
+			return nameErr
+		}
+		finalTargetPath = filepath.Join(targetPath, name)
 	} else {
 		// targetPath是完整的文件路径，确保父目录存在
 		parentDir := filepath.Dir(targetPath)
@@ -550,7 +569,11 @@ func extractTarFile(tarReader *tar.Reader, targetPath string, mode os.FileMode, 
 		if err := os.MkdirAll(targetPath, 0755); err != nil {
 			return utils.Errorf("create target directory failed: %v", err)
 		}
-		finalTargetPath = filepath.Join(targetPath, filepath.Base(fileName))
+		name, nameErr := archiveEntryBaseName(fileName)
+		if nameErr != nil {
+			return nameErr
+		}
+		finalTargetPath = filepath.Join(targetPath, name)
 	} else {
 		// targetPath是完整的文件路径，确保父目录存在
 		if err := os.MkdirAll(filepath.Dir(targetPath), 0755); err != nil {

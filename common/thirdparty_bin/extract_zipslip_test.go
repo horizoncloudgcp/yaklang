@@ -116,3 +116,23 @@ func TestSafeArchiveJoin(t *testing.T) {
 		}
 	}
 }
+
+func TestArchiveEntryBaseName(t *testing.T) {
+	for entry, want := range map[string]string{
+		"tool":           "tool",
+		"bin/tool":       "tool",
+		"./bin/tool.exe": "tool.exe",
+		"a/../tool":      "tool",
+	} {
+		got, err := archiveEntryBaseName(entry)
+		if err != nil || got != want {
+			t.Errorf("archiveEntryBaseName(%q) = %q, %v; want %q", entry, got, err, want)
+		}
+	}
+	// names whose last element is not a file name must be rejected, not joined onto the target
+	for _, entry := range []string{"..", "bin/..", "/"} {
+		if got, err := archiveEntryBaseName(entry); err == nil {
+			t.Errorf("archiveEntryBaseName(%q) = %q, expected rejection", entry, got)
+		}
+	}
+}
