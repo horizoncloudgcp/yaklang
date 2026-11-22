@@ -11,7 +11,10 @@ func (f *binFlow) validateH2Body(dir int, e *ProtocolEvent, s *binH2Stream) erro
 	if s == nil || e.Session["Reset"] == true || s.grpcFailed {
 		return nil
 	}
-	fail := func(why string) error { s.grpcFailed = true; return protocolError(ErrMalformedMessage, "HTTP/2 "+why) }
+	fail := func(why string) error {
+		s.grpcFailed = true
+		return protocolError(ErrMalformedMessage, "%s", "HTTP/2 "+why)
+	}
 	headers, _ := e.Session["Headers"].([]map[string]any)
 	kind, _ := e.Session["Header Kind"].(string)
 	status := ""

@@ -11,7 +11,7 @@ var droneCANNodeInfoSpec = droneCANResponseSpec{1, 0xee468a8121c46a9e, 376, "dro
 
 func decodeDroneCANNodeInfoBody(body []byte, budget ParserBudget) (map[string]any, error) {
 	bad := func(why string) (map[string]any, error) {
-		return nil, protocolError(ErrMalformedMessage, "DroneCAN GetNodeInfo "+why)
+		return nil, protocolError(ErrMalformedMessage, "%s", "DroneCAN GetNodeInfo "+why)
 	}
 	// Byte-aligned nested status/software/hardware, eight-bit certificate
 	// length, then a tail-optimized nonempty name (no name length prefix).

@@ -54,7 +54,7 @@ func misplacedTLS13ServerExtension(kind uint16) string {
 
 func misplacedTLS13ServerExtensionError(kind uint16) error {
 	if name := misplacedTLS13ServerExtension(kind); name != "" {
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS 1.3 ServerHello contains misplaced %s extension (%d)", name, kind))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS 1.3 ServerHello contains misplaced %s extension (%d)", name, kind))
 	}
 	return nil
 }

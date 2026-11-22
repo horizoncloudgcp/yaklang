@@ -377,7 +377,7 @@ func (s *Session) run(planningOnly bool, attachments []*aicommon.AttachedResourc
 				s.controller.Close()
 				s.controller.owned.Wait()
 				payload["completed"] = false
-				s.parent.EmitPlanExecFail(err.Error())
+				s.parent.EmitPlanExecFail("%s", err.Error())
 			}
 			s.parent.EmitJSON(schema.EVENT_TYPE_END_PLAN_AND_EXECUTION, "plan", payload)
 		}()

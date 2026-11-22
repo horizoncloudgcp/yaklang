@@ -699,7 +699,7 @@ func (t *binTLS) applyHandshakeMessage(dir int, b []byte, authenticated bool, li
 			return nil, err
 		}
 		if algorithm, ok := verify.Fields["Signature Algorithm"].(uint16); ok && tlsGREASE16(algorithm) {
-			return nil, protocolError(ErrMalformedMessage, fmt.Sprintf("TLS CertificateVerify selects reserved GREASE signature algorithm 0x%04x", algorithm))
+			return nil, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS CertificateVerify selects reserved GREASE signature algorithm 0x%04x", algorithm))
 		}
 		phase := "handshake"
 		if t.version == 0x304 && t.app[dir] {

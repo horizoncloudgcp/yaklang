@@ -388,7 +388,7 @@ func (s *binDNP3) observePoints(out map[string]any, dir int, src, dest uint16, u
 		}
 		return 0, nil, nil
 	default:
-		return refuse(protocolError(ErrUnsupportedFeature, fmt.Sprintf("DNP3 selected READ points do not decode function %d", fc)))
+		return refuse(protocolError(ErrUnsupportedFeature, "%s", fmt.Sprintf("DNP3 selected READ points do not decode function %d", fc)))
 	}
 }
 

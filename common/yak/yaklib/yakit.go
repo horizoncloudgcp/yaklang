@@ -466,7 +466,7 @@ func (c *YakitClient) OutputDotGraph(tabName string, data string) *YakitDotGraph
 // yakit.SSAStream("{}")
 // ```
 func (c *YakitClient) SSAStream(partsJSON string) {
-	_ = c.YakitLog("ssa-stream", string(partsJSON))
+	_ = c.YakitLog("ssa-stream", "%s", string(partsJSON))
 }
 
 // EmitSSAResult 将单个 SyntaxFlowResult 转换为 SSA 流式负载，并通过内部 "ssa-stream" 通道发送（导出名为 yakit.EmitSSAResult）
@@ -508,7 +508,7 @@ func (c *YakitClient) EmitSSAResult(result *ssaapi.SyntaxFlowResult) (int, int, 
 	if err != nil {
 		return 0, 0, 0, err
 	}
-	_ = c.YakitLog("ssa-stream", string(partsJSON))
+	_ = c.YakitLog("ssa-stream", "%s", string(partsJSON))
 	return len(parts.Risks), len(parts.Files), len(parts.Dataflows), nil
 }
 
@@ -1496,7 +1496,7 @@ func (c *YakitClient) AIAgentSession(sessionID string, source ...string) {
 	if sessionID == "" {
 		return
 	}
-	_ = c.YakitLog("ai_agent_session", sessionID)
+	_ = c.YakitLog("ai_agent_session", "%s", sessionID)
 	if db := consts.GetGormProjectDatabase(); db != nil {
 		if err := yakit.RegisterAIAgentSession(db, sessionID, source...); err != nil {
 			log.Warnf("register ai agent session in yakit db failed: %v", err)

@@ -50,7 +50,7 @@ func (f *binFlow) consumeC37118Continuation(dir int, raw []byte) (map[string]any
 	p := s.continuation[dir]
 	reject := func(kind ProtocolErrorKind, why string) (map[string]any, error, bool) {
 		s.continuation[dir] = nil
-		return nil, protocolError(kind, why), true
+		return nil, protocolError(kind, "%s", why), true
 	}
 	if int(binary.BigEndian.Uint16(raw[2:])) != len(raw) {
 		return reject(ErrMalformedMessage, "C37.118 continuation physical boundary mismatch")

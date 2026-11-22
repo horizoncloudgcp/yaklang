@@ -73,7 +73,7 @@ func (s *binFINS) counts() [2]int {
 	}
 	return n
 }
-func finsErr(k ProtocolErrorKind, why string) error { return protocolError(k, "FINS: "+why) }
+func finsErr(k ProtocolErrorKind, why string) error { return protocolError(k, "%s", "FINS: "+why) }
 
 // Fixed TCP envelope. Length excludes magic and length itself. Reserved error
 // words in commands0/2/6 are observations, not receiver rejection criteria.

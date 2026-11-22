@@ -263,7 +263,9 @@ func (t *binTLS) observeHello(dir int, typ byte, body []byte, limits ...int) (bo
 	if err != nil {
 		return false, err
 	}
-	bad := func(why string) (bool, error) { return false, protocolError(ErrMalformedMessage, "TLS retry: "+why) }
+	bad := func(why string) (bool, error) {
+		return false, protocolError(ErrMalformedMessage, "%s", "TLS retry: "+why)
+	}
 	if err := tlsHelloExtensionStructure(h, typ == 1); err != nil {
 		return false, err
 	}

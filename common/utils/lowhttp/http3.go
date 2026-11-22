@@ -89,7 +89,7 @@ func doHttp3Request(ctx context.Context, clientConn *http3.ClientConn, reqPacket
 
 }
 
-func sendRequestBody(str http3.RequestStream, body io.ReadCloser, contentLength int64) error {
+func sendRequestBody(str *http3.RequestStream, body io.ReadCloser, contentLength int64) error {
 	defer body.Close()
 	buf := make([]byte, bodyCopyBufferSize)
 	if contentLength == -1 {
@@ -112,7 +112,7 @@ func sendRequestBody(str http3.RequestStream, body io.ReadCloser, contentLength 
 	return err
 }
 
-func NewHTTP3ClientConn(conn quic.Connection) *http3.ClientConn {
+func NewHTTP3ClientConn(conn *quic.Conn) *http3.ClientConn {
 	tr := &http3.Transport{}
 	return tr.NewClientConn(conn)
 }

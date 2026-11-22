@@ -2,6 +2,7 @@ package pcaputil
 
 import (
 	"fmt"
+	"io"
 	"sync"
 
 	"github.com/quic-go/qpack"
@@ -41,11 +42,16 @@ func qpackStatic(index uint64) (qpackEntry, error) {
 			if i >= 63 {
 				wire = []byte{0, 0, 0xff, byte(i - 63)}
 			}
-			fields, err := qpack.NewDecoder(nil).DecodeFull(wire)
-			if err != nil || len(fields) != 1 {
+			// exactly one field is expected: the first call yields it, the second reports io.EOF
+			next := qpack.NewDecoder().Decode(wire)
+			field, err := next()
+			if err != nil {
 				panic("qpack: static table decoder contract changed")
 			}
-			qpackStaticTable[i] = fields[0]
+			if _, err := next(); err != io.EOF {
+				panic("qpack: static table decoder contract changed")
+			}
+			qpackStaticTable[i] = field
 		}
 	})
 	f := qpackStaticTable[index]

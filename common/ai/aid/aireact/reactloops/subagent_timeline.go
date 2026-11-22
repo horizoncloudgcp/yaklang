@@ -234,7 +234,7 @@ func buildSubAgentRuntime(
 
 	if handle.Mode() == SubAgentTimelineFork {
 		branchMarker := fmt.Sprintf("sub-react-branch-marker-%s", subTaskID)
-		handle.branch.PushText(parentCfg.AcquireId(), branchMarker)
+		handle.branch.PushText(parentCfg.AcquireId(), "%s", branchMarker)
 	}
 
 	release = func() {
@@ -496,7 +496,7 @@ func PrepareForkedSubAgent(
 	}
 
 	branchMarker := "sub-react-branch-marker-" + subTaskID
-	fork.Branch.PushText(parentCfg.AcquireId(), branchMarker)
+	fork.Branch.PushText(parentCfg.AcquireId(), "%s", branchMarker)
 
 	release := func() {
 		if cfg, ok := childInvoker.GetConfig().(*aicommon.Config); ok {

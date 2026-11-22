@@ -528,7 +528,7 @@ func (r *ReActLoop) callAIFunctionTransaction(
 	prompt, nonce string, generalOutputCallback LoopGeneralOutputCallback,
 	functionCallOutputCallback LoopFunctionCallOutputCallback,
 ) ([]LoopCall, LoopStopReason, *LoopResultDescriptor, error) {
-	callLabel := fmt.Sprintf(fmt.Sprintf("react-loop:%s", r.loopName))
+	callLabel := fmt.Sprintf("%s", fmt.Sprintf("react-loop:%s", r.loopName))
 	descriptor := newLoopResultDescriptor("functioncall")
 	// Capture once for all retries. Registered handlers are not necessarily
 	// advertised tools (planning handoff, init constraints, disabled actions).

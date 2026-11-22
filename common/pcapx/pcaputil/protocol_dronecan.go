@@ -8,10 +8,10 @@ import "encoding/binary"
 // identity, availability, restart, redundant-interface delivery or bus integrity.
 func decodeDroneCANNodeStatus(identifier uint32, data []byte) (map[string]any, error) {
 	bad := func(why string) (map[string]any, error) {
-		return nil, protocolError(ErrMalformedMessage, "DroneCAN "+why)
+		return nil, protocolError(ErrMalformedMessage, "%s", "DroneCAN "+why)
 	}
 	unsupported := func(why string) (map[string]any, error) {
-		return nil, protocolError(ErrUnsupportedFeature, "DroneCAN "+why)
+		return nil, protocolError(ErrUnsupportedFeature, "%s", "DroneCAN "+why)
 	}
 	if len(data) == 0 {
 		return bad("transfer tail is absent")

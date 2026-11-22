@@ -60,7 +60,7 @@ func (a *binParser) decodeDroneCANResponse(id uint32, data []byte, ref PacketRef
 	a.droneCANMu.Lock()
 	defer a.droneCANMu.Unlock()
 	bad := func(kind ProtocolErrorKind, why string) (map[string]any, []PacketReference, error) {
-		return nil, nil, protocolError(kind, "DroneCAN "+strings.TrimPrefix(spec.content, "uavcan.protocol.")+" "+why)
+		return nil, nil, protocolError(kind, "%s", "DroneCAN "+strings.TrimPrefix(spec.content, "uavcan.protocol.")+" "+why)
 	}
 	if a.droneCANStatsDisabled {
 		return bad(ErrResourceExceeded, "receiver history exhausted")
@@ -276,7 +276,7 @@ func (a *binParser) closeDroneCANStats() {
 	if a.droneCANStats != nil {
 		for key, s := range a.droneCANStats.entries {
 			if s.active {
-				err := protocolError(ErrNeedMore, "DroneCAN "+strings.TrimPrefix(s.content, "uavcan.protocol.")+" ended before complete transfer")
+				err := protocolError(ErrNeedMore, "%s", "DroneCAN "+strings.TrimPrefix(s.content, "uavcan.protocol.")+" ended before complete transfer")
 				status, typed := classifySessionError(err)
 				events = append(events, &ProtocolEvent{nativeCANRecord: true, Timestamp: s.at, Transport: "can", Protocol: "dronecan", Profile: s.profile, Admission: "explicit-interface-decode-as", Domain: key.domain, Status: status, Completeness: status, Error: err.Error(), sessionError: typed, SourceBytes: ByteSource{Kind: "reassembled", PacketRefs: append([]PacketReference(nil), s.refs[:s.count]...)}})
 			}

@@ -40,7 +40,7 @@ func (i *actionExecutionTestInvoker) add(entry, content, promptContent string) {
 	i.entries = append(i.entries, entry+":"+content)
 	display := fmt.Sprintf("[%s]:\n%s", entry, content)
 	if promptContent == "" {
-		i.timeline.PushText(i.nextID, display)
+		i.timeline.PushText(i.nextID, "%s", display)
 		return
 	}
 	i.timeline.PushTextWithPromptProjection(i.nextID, display, fmt.Sprintf("[%s]:\n%s", entry, promptContent))

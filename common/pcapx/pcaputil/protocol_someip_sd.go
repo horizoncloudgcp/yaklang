@@ -23,7 +23,7 @@ func inspectSomeIPSD(w []byte, b ParserBudget) (*someIPSDView, error) {
 	if err != nil {
 		return nil, err
 	}
-	bad := func(why string) (*someIPSDView, error) { return nil, protocolError(ErrMalformedMessage, why) }
+	bad := func(why string) (*someIPSDView, error) { return nil, protocolError(ErrMalformedMessage, "%s", why) }
 	if b.MaxRecursionDepth < 5 {
 		return nil, protocolError(ErrResourceExceeded, "SD field nesting budget")
 	}

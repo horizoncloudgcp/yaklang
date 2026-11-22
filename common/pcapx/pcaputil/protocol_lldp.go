@@ -12,7 +12,9 @@ import (
 // This Ethernet profile requires an explicit End TLV. It reports observed
 // neighbor fields, not authenticated identity, topology state or PROFINET RT.
 func decodeLLDP(w []byte, maxElements int) (map[string]any, error) {
-	bad := func(why string) (map[string]any, error) { return nil, protocolError(ErrMalformedMessage, "LLDP "+why) }
+	bad := func(why string) (map[string]any, error) {
+		return nil, protocolError(ErrMalformedMessage, "%s", "LLDP "+why)
+	}
 	var tlvs []map[string]any
 	fields := map[string]any{"Observation": "unverified-neighbor"}
 	for at := 0; at < len(w); {

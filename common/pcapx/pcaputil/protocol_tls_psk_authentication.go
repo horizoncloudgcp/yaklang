@@ -27,5 +27,5 @@ func (t *binTLS) checkInitialPSKAuthentication(dir int, kind byte, authenticated
 	default:
 		return nil
 	}
-	return protocolError(ErrMalformedMessage, "TLS 1.3 PSK forbids initial "+name)
+	return protocolError(ErrMalformedMessage, "%s", "TLS 1.3 PSK forbids initial "+name)
 }

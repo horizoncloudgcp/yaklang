@@ -40,7 +40,7 @@ func TestTimelineProjectionNonceRestoreAndFork(t *testing.T) {
 	tl := NewTimeline(nil, nil)
 	display := "[FUNCTION_CALL_ACTION_RESPONSE]:\naccepted " + oldNonce
 	tl.PushTextWithPromptProjection(1, display, replay)
-	tl.PushText(2, "[note]:\n<|FUNCTION_CALL_ACTION_RESPONSE_"+oldNonce+"|>ordinary example")
+	tl.PushText(2, "%s", "[note]:\n<|FUNCTION_CALL_ACTION_RESPONSE_"+oldNonce+"|>ordinary example")
 	raw, err := MarshalTimeline(tl)
 	require.NoError(t, err)
 	var saved timelineSerializable

@@ -27,8 +27,8 @@ func renderLiteForgePrompt(p liteForgePromptParams) (string, error) {
 
 func TestLiteForgeRecentTimelineIsBoundedAndExcludesOldHistory(t *testing.T) {
 	timeline := aicommon.NewTimeline(nil, nil)
-	timeline.PushText(1, "OLD_SENTINEL "+strings.Repeat("old-history ", 12000))
-	timeline.PushText(2, "NEW_SENTINEL "+strings.Repeat("recent-context ", 6000))
+	timeline.PushText(1, "%s", "OLD_SENTINEL "+strings.Repeat("old-history ", 12000))
+	timeline.PushText(2, "%s", "NEW_SENTINEL "+strings.Repeat("recent-context ", 6000))
 
 	recent := liteForgeRecentTimeline(timeline)
 	require.NotEmpty(t, recent)

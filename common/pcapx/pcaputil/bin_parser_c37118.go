@@ -177,7 +177,7 @@ func (f *binFlow) consumeC37118(dir int, raw []byte) (map[string]any, error) {
 	if err != nil {
 		if errors.Is(err, stream_parser.ErrC37118ContinuationRequired) {
 			s.configuration[dir] = nil
-			return nil, protocolError(ErrUnsupportedFeature, err.Error())
+			return nil, protocolError(ErrUnsupportedFeature, "%s", err.Error())
 		}
 		if errors.Is(err, stream_parser.ErrC37118CollectionLimit) {
 			// The envelope passed validation, but this replacement's PMU or
@@ -186,9 +186,9 @@ func (f *binFlow) consumeC37118(dir int, raw []byte) (map[string]any, error) {
 			if raw[1]>>4 == 3 || raw[1]>>4 == 5 {
 				s.configuration[dir] = nil
 			}
-			return nil, protocolError(ErrResourceExceeded, err.Error())
+			return nil, protocolError(ErrResourceExceeded, "%s", err.Error())
 		}
-		return nil, protocolError(ErrMalformedMessage, err.Error())
+		return nil, protocolError(ErrMalformedMessage, "%s", err.Error())
 	}
 	if m.FrameType == 0 {
 		// PMU blocks have different widths selected by CFG-2. Inspect every
@@ -200,7 +200,7 @@ func (f *binFlow) consumeC37118(dir int, raw []byte) (map[string]any, error) {
 			s.configuration[dir] = nil
 			m, err = stream_parser.DecodeC37118Message(raw, nil, f.a.budget.MaxCollectionElements)
 			if err != nil {
-				return nil, protocolError(ErrMalformedMessage, err.Error())
+				return nil, protocolError(ErrMalformedMessage, "%s", err.Error())
 			}
 		}
 		s.changeIndicated[dir] = changed
@@ -217,7 +217,7 @@ func (f *binFlow) consumeC37118(dir int, raw []byte) (map[string]any, error) {
 			cm, err = stream_parser.DecodeC37118Message(cfg, nil, f.a.budget.MaxCollectionElements)
 		}
 		if err != nil {
-			return nil, protocolError(ErrMalformedMessage, err.Error())
+			return nil, protocolError(ErrMalformedMessage, "%s", err.Error())
 		}
 		out["Engineering"], err = c37118EngineeringFields(m, cm.Configuration)
 		if err != nil {

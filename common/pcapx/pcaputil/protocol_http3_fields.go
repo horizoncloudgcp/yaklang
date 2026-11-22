@@ -27,7 +27,7 @@ func h3Token(s string, lower bool) bool {
 // unsupported, rather than misreporting them as a confirmed malformed message.
 func h3ValidateFieldSection(headers []map[string]any, dir, prior int) (string, error) {
 	bad := func(reason string) (string, error) {
-		return "malformed", protocolError(ErrMalformedMessage, "HTTP3 "+reason)
+		return "malformed", protocolError(ErrMalformedMessage, "%s", "HTTP3 "+reason)
 	}
 	if prior >= 2 {
 		return bad("multiple trailer sections")

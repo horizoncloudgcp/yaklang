@@ -337,16 +337,16 @@ func iso8583ReadField(w []byte, field int, spec iso8583FieldSpec, enc iso8583Enc
 		}
 		if enc == iso8583ASCII {
 			if len(w) < digits {
-				return nil, 0, 0, protocolError(ErrNeedMore, fmt.Sprintf("iso8583: element %d length prefix is incomplete", field))
+				return nil, 0, 0, protocolError(ErrNeedMore, "%s", fmt.Sprintf("iso8583: element %d length prefix is incomplete", field))
 			}
 			for i := 0; i < digits; i++ {
 				if w[i] < '0' || w[i] > '9' {
-					return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d length prefix is not decimal", field))
+					return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d length prefix is not decimal", field))
 				}
 			}
 			value, err := strconv.Atoi(string(w[:digits]))
 			if err != nil {
-				return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d length prefix is invalid", field))
+				return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d length prefix is invalid", field))
 			}
 			length, header = value, digits
 		} else {
@@ -355,21 +355,21 @@ func iso8583ReadField(w []byte, field int, spec iso8583FieldSpec, enc iso8583Enc
 				size = 2
 			}
 			if len(w) < size {
-				return nil, 0, 0, protocolError(ErrNeedMore, fmt.Sprintf("iso8583: element %d length prefix is incomplete", field))
+				return nil, 0, 0, protocolError(ErrNeedMore, "%s", fmt.Sprintf("iso8583: element %d length prefix is incomplete", field))
 			}
 			value, ok := iso8583BCDValue(w[:size])
 			if !ok {
-				return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d length prefix is not packed BCD", field))
+				return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d length prefix is not packed BCD", field))
 			}
 			numeric, err := strconv.Atoi(value)
 			if err != nil {
-				return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d length prefix is invalid", field))
+				return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d length prefix is invalid", field))
 			}
 			length, header = numeric, size
 		}
 	}
 	if length < 0 || length > spec.Max {
-		return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d declares %d beyond the %d limit", field, length, spec.Max))
+		return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d declares %d beyond the %d limit", field, length, spec.Max))
 	}
 
 	var value any
@@ -379,20 +379,20 @@ func iso8583ReadField(w []byte, field int, spec iso8583FieldSpec, enc iso8583Enc
 		if enc == iso8583ASCII {
 			body = (length + 3) / 4
 			if len(w) < header+body {
-				return nil, 0, 0, protocolError(ErrNeedMore, fmt.Sprintf("iso8583: element %d value is incomplete", field))
+				return nil, 0, 0, protocolError(ErrNeedMore, "%s", fmt.Sprintf("iso8583: element %d value is incomplete", field))
 			}
 			// The ASCII carrier spells the same bit string in hexadecimal. Both
 			// encodings must produce identical bytes so a caller never depends on
 			// the carrier's notation.
 			decoded, err := hex.DecodeString(string(w[header : header+body]))
 			if err != nil {
-				return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d is not hexadecimal", field))
+				return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d is not hexadecimal", field))
 			}
 			value = decoded
 		} else {
 			body = (length + 7) / 8
 			if len(w) < header+body {
-				return nil, 0, 0, protocolError(ErrNeedMore, fmt.Sprintf("iso8583: element %d value is incomplete", field))
+				return nil, 0, 0, protocolError(ErrNeedMore, "%s", fmt.Sprintf("iso8583: element %d value is incomplete", field))
 			}
 			value = append([]byte(nil), w[header:header+body]...)
 		}
@@ -400,23 +400,23 @@ func iso8583ReadField(w []byte, field int, spec iso8583FieldSpec, enc iso8583Enc
 		if enc == iso8583ASCII {
 			body = length
 			if len(w) < header+body {
-				return nil, 0, 0, protocolError(ErrNeedMore, fmt.Sprintf("iso8583: element %d value is incomplete", field))
+				return nil, 0, 0, protocolError(ErrNeedMore, "%s", fmt.Sprintf("iso8583: element %d value is incomplete", field))
 			}
 			raw := w[header : header+body]
 			for _, c := range raw {
 				if c < '0' || c > '9' {
-					return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d is not decimal", field))
+					return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d is not decimal", field))
 				}
 			}
 			value = string(raw)
 		} else {
 			body = (length + 1) / 2
 			if len(w) < header+body {
-				return nil, 0, 0, protocolError(ErrNeedMore, fmt.Sprintf("iso8583: element %d value is incomplete", field))
+				return nil, 0, 0, protocolError(ErrNeedMore, "%s", fmt.Sprintf("iso8583: element %d value is incomplete", field))
 			}
 			numeric, ok := iso8583BCDValue(w[header : header+body])
 			if !ok {
-				return nil, 0, 0, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: element %d is not packed BCD", field))
+				return nil, 0, 0, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: element %d is not packed BCD", field))
 			}
 			// Odd-width numeric elements carry a leading pad nibble. Comparing
 			// the ASCII and binary captures of the same issuer shows the pad
@@ -429,7 +429,7 @@ func iso8583ReadField(w []byte, field int, spec iso8583FieldSpec, enc iso8583Enc
 	default:
 		body = length
 		if len(w) < header+body {
-			return nil, 0, 0, protocolError(ErrNeedMore, fmt.Sprintf("iso8583: element %d value is incomplete", field))
+			return nil, 0, 0, protocolError(ErrNeedMore, "%s", fmt.Sprintf("iso8583: element %d value is incomplete", field))
 		}
 		// Text elements carry raw characters in both encodings. The binary
 		// capture keeps "12345   " here, so nibble-decoding is never guessed
@@ -494,7 +494,7 @@ func decodeISO8583Message(body []byte, budget ParserBudget) (map[string]any, err
 		}
 		spec, ok := iso8583FieldSpecs[field]
 		if !ok {
-			return nil, protocolError(ErrUnsupportedFeature, fmt.Sprintf("iso8583: data element %d has no published definition", field))
+			return nil, protocolError(ErrUnsupportedFeature, "%s", fmt.Sprintf("iso8583: data element %d has no published definition", field))
 		}
 		// ISO 8583:1987 defines element 39 as two alphanumeric characters; the
 		// 1993 and 2003 revisions widen it to three numeric digits. Both public
@@ -522,7 +522,7 @@ func decodeISO8583Message(body []byte, budget ParserBudget) (map[string]any, err
 		order = append(order, field)
 	}
 	if offset != len(body) {
-		return nil, protocolError(ErrMalformedMessage, fmt.Sprintf("iso8583: %d bytes remain outside the declared data elements", len(body)-offset))
+		return nil, protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("iso8583: %d bytes remain outside the declared data elements", len(body)-offset))
 	}
 	out["Data Elements"] = elements
 	out["Data Element Order"] = order

@@ -251,7 +251,7 @@ func (f *RuleFormat) Visit(flow sf.IFlowContext, editor *memedit.MemEditor) {
 		case *sf.AlertContext:
 			f.VisitAlertStatement(stmt.AlertStatement())
 		default:
-			f.Write(f.GetTextFromToken(stmt))
+			f.Write("%s", f.GetTextFromToken(stmt))
 		}
 	}
 
@@ -340,13 +340,13 @@ func (f *RuleFormat) VisitAlertStatement(alert sf.IAlertStatementContext) {
 			if strings.Contains(res, "MISSING") {
 				log.Warnf("alert item %s value is missing, please check the rule: %s", key, res)
 			}
-			f.Write(res)
+			f.Write("%s", res)
 		} else {
 			res := fmt.Sprintf("\t%s: \"%s\",\n", key, escapeSyntaxFlowString(newVal))
 			if strings.Contains(res, "MISSING") {
 				log.Warnf("alert item %s value is missing, please check the rule: %s", key, res)
 			}
-			f.Write(res)
+			f.Write("%s", res)
 		}
 		return true
 	})

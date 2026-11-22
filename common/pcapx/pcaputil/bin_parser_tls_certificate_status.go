@@ -25,7 +25,7 @@ func DecodeTLSCertificateStatus(encoded []byte, version uint16) (*TLSCertificate
 	}
 	literals, _, err := stream_parser.DecodeTLS12CertificateStatusLayout(encoded)
 	if err != nil {
-		return nil, protocolError(ErrMalformedMessage, err.Error())
+		return nil, protocolError(ErrMalformedMessage, "%s", err.Error())
 	}
 	v := &TLSCertificateStatusView{Fields: map[string]any{"Status Type Name": "ocsp", "OCSP DER Decoded": false,
 		"OCSP Response Validated": false, "Certificate Trust Evaluated": false}}

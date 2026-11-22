@@ -208,7 +208,7 @@ func (s *binTFTP) consume(dir int, w []byte, max int, evidence ...tftpFileEviden
 					return nil, protocolError(ErrUnsupportedFeature, "TFTP windowed transfer")
 				}
 			default:
-				return nil, protocolError(ErrUnsupportedFeature, "TFTP option "+k)
+				return nil, protocolError(ErrUnsupportedFeature, "%s", "TFTP option "+k)
 			}
 		}
 		sort.Strings(canonical)

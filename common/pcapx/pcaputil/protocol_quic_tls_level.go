@@ -19,12 +19,12 @@ func quicTLSMessageLevel(typ byte, space int) error {
 		want = quicSpaceApplication
 	case 8, 11, 13, 15, 20, 25:
 	case 5, 24: // QUIC has no EndOfEarlyData or TLS KeyUpdate.
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS handshake type %d is prohibited in QUIC", typ))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS handshake type %d is prohibited in QUIC", typ))
 	default:
-		return protocolError(ErrUnsupportedFeature, fmt.Sprintf("QUIC TLS handshake type %d is outside the selected profile", typ))
+		return protocolError(ErrUnsupportedFeature, "%s", fmt.Sprintf("QUIC TLS handshake type %d is outside the selected profile", typ))
 	}
 	if space != want {
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("QUIC TLS handshake type %d is not permitted at %s encryption level", typ, quicSpaceName(space)))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("QUIC TLS handshake type %d is not permitted at %s encryption level", typ, quicSpaceName(space)))
 	}
 	return nil
 }

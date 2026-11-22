@@ -21,7 +21,7 @@ type hartIPToken struct {
 	address string
 }
 
-func hartIPErr(k ProtocolErrorKind, s string) error { return protocolError(k, "HART-IP: "+s) }
+func hartIPErr(k ProtocolErrorKind, s string) error { return protocolError(k, "%s", "HART-IP: "+s) }
 func hartIPNumber(w []byte) map[string]any {
 	bits := binary.BigEndian.Uint32(w)
 	f := map[string]any{"bits": uint64(bits), "classification": "finite"}

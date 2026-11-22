@@ -115,7 +115,7 @@ func (h3 *h3StreamState) checkBody(dir int, sid uint64, fin bool) (map[string]an
 	}
 	bad := func(reason string) (map[string]any, error) {
 		m["Length Check"], m["Error"] = "malformed", reason
-		return m, protocolError(ErrMalformedMessage, "HTTP3 "+reason)
+		return m, protocolError(ErrMalformedMessage, "%s", "HTTP3 "+reason)
 	}
 	if !b.header {
 		m["Length Check"] = "awaiting-final-headers"

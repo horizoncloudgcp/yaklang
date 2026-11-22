@@ -50,7 +50,7 @@ func tlsServerHelloGREASE(body []byte, h *tlsHelloView) error {
 		if bytes.Equal(body[2:34], tlsRetryRandom[:]) {
 			name = "HelloRetryRequest"
 		}
-		return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS %s selects reserved GREASE %s 0x%04x", name, kind, value))
+		return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS %s selects reserved GREASE %s 0x%04x", name, kind, value))
 	}
 	return nil
 }
@@ -128,7 +128,7 @@ func tlsCertificateGREASE(view *TLSCertificateView) error {
 		extensions, _ := entry["Extensions"].([]map[string]any)
 		for _, extension := range extensions {
 			if kind, ok := extension["Type"].(uint16); ok && tlsGREASE16(kind) {
-				return protocolError(ErrMalformedMessage, fmt.Sprintf("TLS Certificate selects reserved GREASE extension 0x%04x", kind))
+				return protocolError(ErrMalformedMessage, "%s", fmt.Sprintf("TLS Certificate selects reserved GREASE extension 0x%04x", kind))
 			}
 		}
 	}
