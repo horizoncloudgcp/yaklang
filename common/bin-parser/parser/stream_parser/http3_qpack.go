@@ -2,6 +2,7 @@ package stream_parser
 
 import (
 	"fmt"
+	"io"
 	"sync"
 
 	"github.com/quic-go/qpack"
@@ -26,11 +27,16 @@ func http3QPACKStatic(index uint64) (qpack.HeaderField, error) {
 			if i >= 63 {
 				wire = []byte{0, 0, 0xff, byte(i - 63)}
 			}
-			fields, err := qpack.NewDecoder(nil).DecodeFull(wire)
-			if err != nil || len(fields) != 1 {
+			// exactly one field is expected: the first call yields it, the second reports io.EOF
+			next := qpack.NewDecoder().Decode(wire)
+			field, err := next()
+			if err != nil {
 				panic("qpack: installed static table decoder contract changed")
 			}
-			http3StaticTable[i] = fields[0]
+			if _, err := next(); err != io.EOF {
+				panic("qpack: installed static table decoder contract changed")
+			}
+			http3StaticTable[i] = field
 		}
 	})
 	return http3StaticTable[index], nil
