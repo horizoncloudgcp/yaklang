@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/hashicorp/go-version"
 	"github.com/projectdiscovery/gostruct"
 	"github.com/yaklang/yaklang/common/go-funk"

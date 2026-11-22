@@ -3,7 +3,7 @@ package authhack
 import (
 	"errors"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // Implements the none signing method.  This is required by the spec

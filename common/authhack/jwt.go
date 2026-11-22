@@ -3,7 +3,7 @@ package authhack
 import (
 	"errors"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/yaklang/yaklang/common/utils"
 	"github.com/yaklang/yaklang/common/utils/orderedmap"
 )
@@ -131,6 +131,10 @@ AC8d83&21Almnis710sds
 )
 
 func init() {
+	// Tokens met in the wild are not always spec-compliant: accept base64 segments that carry
+	// padding, as jwt-go v3 always did. jwt v4 rejects them unless told otherwise.
+	jwt.DecodePaddingAllowed = true
+
 	for _, i := range JwtAlgs {
 		algsToAlgsInstance[i.Alg()] = i
 	}
