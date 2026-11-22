@@ -1171,7 +1171,12 @@ func resolveArchiveExtractTarget(dst, entryName string) (string, error) {
 	if strings.HasPrefix(cleaned, "/") || cleaned == ".." || strings.HasPrefix(cleaned, "../") {
 		return "", utils.Errorf("invalid archive path: %s", entryName)
 	}
-	target := filepath.Join(dst, filepath.FromSlash(cleaned))
+	local := filepath.FromSlash(cleaned)
+	// also rejects what the checks above cannot see on Windows (drive-relative paths, reserved device names)
+	if !filepath.IsLocal(local) {
+		return "", utils.Errorf("invalid archive path: %s", entryName)
+	}
+	target := filepath.Join(dst, local)
 	rel, err := filepath.Rel(dst, target)
 	if err != nil {
 		return "", err

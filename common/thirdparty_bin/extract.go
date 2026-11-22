@@ -162,7 +162,10 @@ func extractZipAll(reader *zip.ReadCloser, targetPath string, isDir bool, passwo
 	}
 
 	for _, file := range reader.File {
-		itemTargetPath := filepath.Join(targetPath, file.Name)
+		itemTargetPath, err := safeArchiveJoin(targetPath, file.Name)
+		if err != nil {
+			return err
+		}
 		log.Infof("processing file: %s, target: %s", file.Name, itemTargetPath)
 		mode := file.Mode()
 		switch {
@@ -277,7 +280,11 @@ func extractZipDirectory(reader *zip.ReadCloser, targetPath, dirPath string, con
 		if !isDir && len(files) == 1 && !item.isDir {
 			itemTargetPath = targetPath
 		} else {
-			itemTargetPath = filepath.Join(targetPath, item.relativePath)
+			var err error
+			itemTargetPath, err = safeArchiveJoin(targetPath, item.relativePath)
+			if err != nil {
+				return err
+			}
 		}
 
 		if item.isDir {
@@ -301,6 +308,20 @@ func extractZipDirectory(reader *zip.ReadCloser, targetPath, dirPath string, con
 
 	log.Infof("extractZipDirectory finished successfully")
 	return nil
+}
+
+// safeArchiveJoin 将压缩包条目名拼接到目标目录下，拒绝会逃逸出目标目录的条目名
+// (绝对路径、"../" 穿越)，防止 zip-slip 任意文件写入。
+// 关键词: zip-slip, 解压路径校验, safeArchiveJoin
+func safeArchiveJoin(targetDir, entryName string) (string, error) {
+	if entryName == "" {
+		// "build/*" 模式下目录条目自身的相对路径为空，对应目标目录本身
+		return targetDir, nil
+	}
+	if !filepath.IsLocal(entryName) {
+		return "", utils.Errorf("illegal path in archive (escapes target directory): %s", entryName)
+	}
+	return filepath.Join(targetDir, entryName), nil
 }
 
 // extractItem 提取项目信息
@@ -485,12 +506,11 @@ func extractFromTar(tarReader *tar.Reader, targetPath, pick string, isDir bool) 
 			// 由于tar是流式读取，我们需要立即处理每个文件
 			var itemTargetPath string
 			if isDir {
-				if strings.HasSuffix(pick, "/*") && relativePath != "" {
-					// build/* 模式，直接使用相对路径
-					itemTargetPath = filepath.Join(targetPath, relativePath)
-				} else {
-					// build/ 模式或 * 模式，保持完整路径
-					itemTargetPath = filepath.Join(targetPath, relativePath)
+				// build/* 模式使用相对路径；build/ 模式或 * 模式保持完整路径
+				var err error
+				itemTargetPath, err = safeArchiveJoin(targetPath, relativePath)
+				if err != nil {
+					return err
 				}
 			} else {
 				// 文件路径模式，只能提取单个文件

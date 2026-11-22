@@ -364,3 +364,10 @@ func TestSQLiteFTS5Setup_ConditionalIndexing(t *testing.T) {
 		require.Len(t, got, 0)
 	}
 }
+
+func TestSQLiteFTS5BuildMatchQuery_EscapesDoubleQuotes(t *testing.T) {
+	// a double quote inside a term must be doubled, otherwise it closes the FTS5 string early
+	require.Equal(t, `("say ""hi""") OR ("plain")`, sqliteFTS5BuildMatchQuery([]string{`say "hi"`, "plain"}))
+	// a single term is still passed through untouched as a raw FTS5 query
+	require.Equal(t, `title:"exact phrase"`, sqliteFTS5BuildMatchQuery([]string{`title:"exact phrase"`}))
+}

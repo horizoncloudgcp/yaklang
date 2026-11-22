@@ -27,7 +27,9 @@ func sqliteFTS5BuildMatchQuery(matches []string) string {
 	default:
 		// Default relationship: OR
 		for i := range cleaned {
-			cleaned[i] = fmt.Sprintf(`("%s")`, cleaned[i])
+			// FTS5 escapes a double quote inside a string by doubling it; without this a term
+			// containing `"` terminates the string early and yields a malformed MATCH query.
+			cleaned[i] = fmt.Sprintf(`("%s")`, strings.ReplaceAll(cleaned[i], `"`, `""`))
 		}
 		return strings.Join(cleaned, " OR ")
 	}

@@ -1,0 +1,65 @@
+name: yaklang CodeQL configuration
+
+# yaklang is an offensive-security toolkit: a scanner, a MITM proxy, a fuzzer, brute-force probes,
+# a codec library and an AI agent that runs on the operator's own machine. CodeQL's default suite
+# assumes a web application defending itself against remote users, so several of its rules flag
+# what this project does on purpose. Those rules are switched off below, each with its reason.
+# Every other rule of the default suite stays active.
+#
+# To re-enable a rule, delete its entry. To exclude files rather than rules, edit
+# excluded-paths.txt next to this file: `paths-ignore` is not used here because CodeQL ignores it
+# for Go, which is analysed from a build.
+
+query-filters:
+  # --- The tool has to reach arbitrary, misconfigured or legacy targets -------------------------
+  # A scanner or an intercepting proxy that refused invalid certificates could not do its job.
+  - exclude:
+      id: go/disabled-certificate-check
+  # Probing old servers requires offering old TLS versions and cipher suites.
+  - exclude:
+      id: go/insecure-tls
+  # SSH brute-force and one-shot SSH clients connect to hosts whose key is unknown by definition.
+  - exclude:
+      id: go/insecure-hostkeycallback
+
+  # --- Legacy cryptography is implemented because protocols and users ask for it ----------------
+  # NTLM, RDP, VNC, Oracle, MS-CHAPv2 and MySQL authentication mandate RC4, DES, MD4 and MD5, and
+  # the codec library exposes these primitives to scripts.
+  - exclude:
+      id: go/weak-cryptographic-algorithm
+  - exclude:
+      id: go/weak-sensitive-data-hashing
+  # Key size is a parameter of the scripting API (tls.GenerateRSAKeyPair), chosen by the caller.
+  - exclude:
+      id: go/weak-crypto-key
+  # Fires where fuzzer-generated data reaches the codec and protocol helpers. The helpers that
+  # need unpredictable values read them from crypto/rand.
+  - exclude:
+      id: go/insecure-randomness
+
+  # --- A local operator tool: reading files and printing data is the feature --------------------
+  # Scripts, CLI commands and the AI agent open the paths their operator gives them.
+  - exclude:
+      id: go/path-injection
+  # CLI and debugging output of captured traffic and of credentials under test.
+  - exclude:
+      id: go/clear-text-logging
+
+  # --- Rules with no true positive in this code base ---------------------------------------------
+  # Matches any JSON value concatenated between quotes. Here that is prompt and log text built for
+  # a language model, never a command or a query.
+  - exclude:
+      id: go/unsafe-quoting
+  # Width conversions in packet builders and binary parsers, where truncating to the field width
+  # of the wire format is intended.
+  - exclude:
+      id: go/incorrect-integer-conversion
+  # len(a)+len(b) passed to make(); cannot overflow on the 64-bit targets yaklang ships for.
+  - exclude:
+      id: go/allocation-size-overflow
+  # Fire on plain URL and host constants (API endpoints, example.com defaults) that reach generic
+  # pattern-matching helpers; none of them is used as an allow-list.
+  - exclude:
+      id: go/incomplete-hostname-regexp
+  - exclude:
+      id: go/regex/missing-regexp-anchor

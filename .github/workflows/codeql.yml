@@ -1,0 +1,106 @@
+name: CodeQL
+
+# Advanced setup. It replaces GitHub's default setup, which must stay disabled in
+# Settings > Code security: GitHub rejects results from a workflow while default setup is on.
+#
+# What is analysed and why is described in .github/codeql/codeql-config.yml (rules)
+# and .github/codeql/excluded-paths.txt (paths).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '23 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ matrix.timeout }}
+    permissions:
+      security-events: write # upload results to code scanning
+      contents: read
+      actions: read # only needed if the repository becomes private
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Go takes well over an hour on a standard runner.
+          - language: go
+            build-mode: autobuild
+            timeout: 180
+          - language: javascript-typescript
+            build-mode: none
+            timeout: 30
+          - language: python
+            build-mode: none
+            timeout: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        if: matrix.language == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql/codeql-config.yml
+
+      # Results are filtered by path below, so the upload is a separate step.
+      # failure-only still reports a failed analysis to the code scanning status page.
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
+          upload: failure-only
+          output: sarif-results
+
+      - name: Drop results from excluded paths
+        run: |
+          set -euo pipefail
+          alternatives=$(grep -vE '^[[:space:]]*(#|$)' .github/codeql/excluded-paths.txt | sed -E 's/[[:space:]]+$//' | paste -sd '|' - || true)
+          if [ -z "$alternatives" ]; then
+            # An empty alternation would match every path and silently drop all results.
+            echo "excluded-paths.txt lists no pattern: uploading results unfiltered"
+            exit 0
+          fi
+          pattern="^(?:$alternatives)"
+          echo "Excluded path pattern: $pattern"
+          shopt -s nullglob
+          files=(sarif-results/*.sarif)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::CodeQL produced no SARIF file in sarif-results/"
+            exit 1
+          fi
+          for file in "${files[@]}"; do
+            before=$(jq '[.runs[].results | length] | add // 0' "$file")
+            jq --arg pattern "$pattern" '
+              .runs[].results |= map(select(
+                ((.locations[0].physicalLocation.artifactLocation.uri // "") | test($pattern)) | not
+              ))' "$file" > "$file.filtered"
+            mv "$file.filtered" "$file"
+            after=$(jq '[.runs[].results | length] | add // 0' "$file")
+            echo "$file: kept $after of $before results"
+          done
+
+      - name: Upload results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: sarif-results
+          category: "/language:${{ matrix.language }}"
