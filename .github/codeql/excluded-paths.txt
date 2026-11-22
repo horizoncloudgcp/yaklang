@@ -1,0 +1,27 @@
+# Paths whose CodeQL results are dropped before upload (see .github/workflows/codeql.yml).
+#
+# One regular expression per line, matched from the start of the repository-relative path.
+# Blank lines and lines starting with '#' are ignored.
+#
+# This list exists because `paths-ignore` in codeql-config.yml has no effect on Go: Go is analysed
+# from a build, and CodeQL only honours path filters for languages it scans without building.
+
+# Deliberately vulnerable training targets: the vulnerabilities are the product.
+common/vulinbox/
+
+# Mock servers reproducing SSRF and XSS so that detection code can be tested against them.
+common/mockey/
+
+# Vendored third-party code, fixed upstream rather than here.
+common/third_party/
+
+# Inputs for the parsers and compilers under test (JavaScript bundles, JSP, Python projects...).
+(.*/)?testdata/
+(.*/)?tests?/
+common/yak/antlr4JS/test\.js$
+
+# Test doubles that are not named *_test.go.
+common/rpa/implement/testimple/
+
+# Third-party bot-detection page, embedded verbatim as crawler test data.
+embed/data/anti-crawler/
