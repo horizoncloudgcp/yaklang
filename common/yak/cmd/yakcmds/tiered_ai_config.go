@@ -129,7 +129,8 @@ func printTierConfigs(tierName string, entries []AIModelConfigEntry) {
 			if len(e.APIKey) > 8 {
 				apiKeyDisplay = e.APIKey[:4] + "****" + e.APIKey[len(e.APIKey)-4:]
 			} else {
-				apiKeyDisplay = e.APIKey
+				// too short to show a prefix/suffix without revealing most of the key
+				apiKeyDisplay = "****"
 			}
 		}
 		fmt.Printf("  [%d] type=%-12s domain=%-30s model=%-25s api_key=%s\n",
